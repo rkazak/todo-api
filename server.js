@@ -1,5 +1,6 @@
-var express = require('express');
+var express    = require('express');
 var bodyParser = require('body-parser');
+var _          = require('underscore');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -19,7 +20,12 @@ app.get('/todos',function(req, res) {
 
 // GET /todos/:id
 app.get('/todos/:id', function ( req, res ) {
+
 	var todoId = req.params.id;
+	var matchedTodo = _.findWhere(todos, {id: todoId});
+
+/*
+Alternate - 2
 	//console.log('todoid '+todoId);
 	// Iterate over todos array. Find match.
 	//console.log('len '+todos.length);
@@ -35,9 +41,9 @@ app.get('/todos/:id', function ( req, res ) {
 	};
 	res.status(404).send();
 });
-
+*/
 /*
-Alternate -
+Alternate - 1
 app.get('/todos:id', function( req, res ) {
 	var todoID = parseInt(req.params.id, 10);
 	var matchedTodo;
@@ -47,7 +53,7 @@ app.get('/todos:id', function( req, res ) {
 	      matchedTodo = todo;
 	   }
 	});
-
+*/
 	if (matchedTodo) {
 	   res.json(matchedTodo);
 	} else {
@@ -55,16 +61,25 @@ app.get('/todos:id', function( req, res ) {
 	}
 });
 
-*/
 
 // POST /todos
-app.post('/todos', function(req, res) {
-	var body = req.body;
+app.post('/todos', function ( req, res ) {
+    var body = _.pick(req.body, 'completed', 'description');
+
+	if (   !_.isBoolean(body.completed)
+		|| !_.isString(body.description)
+		|| body.description.trim().length === 0) {
+		return res.status(400).send();
+	}
+
+    body.description = body.description.trim();
+
 	// add id
-	body.id = todoNextId;
-	todoNextId++;
+	body.id = todoNextId++;
+
 	// push body into array
 	todos.push(body);
+
 	res.json(body);
 
 });
