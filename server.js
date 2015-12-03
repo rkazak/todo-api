@@ -25,7 +25,7 @@ app.get('/todos/:id', function ( req, res ) {
 	}
 });
 
-// GET /todos?completed=true|false
+// GET /todos?completed=true|false&q=work
 app.get('/todos', function ( req, res ) {
 	var queryParams = req.query;
 	var filteredTodos = todos;
@@ -36,6 +36,12 @@ app.get('/todos', function ( req, res ) {
 		filteredTodos = _.where(filteredTodos, { completed: false});
 	}
 
+    if (queryParams.hasOwnProperty('q')) {
+    	filteredTodos = _.filter(filteredTodos,
+    					function ( todo ) {
+    						return todo.description.indexOf(queryParams.q) > -1;
+    					 } );
+	}
 	res.json(filteredTodos);
 });
 
