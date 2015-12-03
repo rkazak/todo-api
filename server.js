@@ -13,52 +13,30 @@ app.get('/', function( req, res ) {
 	res.send('Todo API Root');
 });
 
-// GET /todos
-app.get('/todos', function ( req, res ) {
-	res.json(todos);
-});
-
-// GET /todos/:id
 app.get('/todos/:id', function ( req, res ) {
 
 	var todoId = parseInt(req.params.id, 10);
 	var matchedTodo = _.findWhere(todos, {id: todoId});
 
-/*
-Alternate - 2
-	//console.log('todoid '+todoId);
-	// Iterate over todos array. Find match.
-	//console.log('len '+todos.length);
-	for (var i in todos) {
-		var val = todos[i];
-		//console.log(val['id']+' '+todoId);
-
-		if (val['id'] == todoId) {
-			//console.log('Yi');
-			//res.send('Asking for todo with id of ' + req.params.id);
-			res.json(val);
-		}
-	};
-	res.status(404).send();
-});
-*/
-/*
-Alternate - 1
-app.get('/todos:id', function( req, res ) {
-	var todoID = parseInt(req.params.id, 10);
-	var matchedTodo;
-
-	todos.forEach(function (todo) {
-	   if (todoId === todo.id) {
-	      matchedTodo = todo;
-	   }
-	});
-*/
 	if (matchedTodo) {
 	   res.json(matchedTodo);
 	} else {
 	   res.status(404).send();
 	}
+});
+
+// GET /todos?completed=true|false
+app.get('/todos', function ( req, res ) {
+	var queryParams = req.query;
+	var filteredTodos = todos;
+
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
+		filteredTodos = _.where(filteredTodos, { completed: true});
+	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
+		filteredTodos = _.where(filteredTodos, { completed: false});
+	}
+
+	res.json(filteredTodos);
 });
 
 
