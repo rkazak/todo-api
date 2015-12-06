@@ -14,20 +14,6 @@ app.get('/', function(req, res) {
 	res.send('Todo API Root');
 });
 
-app.get('/todos/:id', function(req, res) {
-
-	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
-	});
-
-	if (matchedTodo) {
-		res.json(matchedTodo);
-	} else {
-		res.status(404).send();
-	}
-});
-
 // GET /todos?completed=true|false&q=work
 app.get('/todos', function(req, res) {
 	var queryParams = req.query;
@@ -52,32 +38,33 @@ app.get('/todos', function(req, res) {
 	res.json(filteredTodos);
 });
 
+// GET /todos/id
+app.get('/todos/:id', function(req, res) {
+	var todoId = parseInt(req.params.id, 10);
+
+	db.todo.findById(todoId).then( function (todo) {
+		//console.log(todo);
+		if (!!todo) {
+			res.json(todo.toJSON());
+		} else {
+			res.status(404).send();
+		}
+	}, function(e) {
+		res.status(500).send(e);
+	});
+});
 
 // POST /todos
 app.post('/todos', function(req, res) {
-
 	var body = _.pick(req.body, 'completed', 'description');
-
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send();
-	// }
-
-	// body.description = body.description.trim();
-
-	// // add id
-	// body.id = todoNextId++;
-
-	// // push body into array
-	// todos.push(body);
-
-	// res.json(body);
 	db.todo.create(body).then( function (todo) {
-		console.log(body);
+		//console.log(body);
 		res.json(todo.toJSON());
-	}).catch(function(e) {
+	}, function (e) {
 		res.status(400).json(e);
 	});
 });
+
 
 // DELETE
 app.delete('/todos/:id', function(req, res) {
