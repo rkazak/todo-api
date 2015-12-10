@@ -1,7 +1,7 @@
 // Require the library for sequelize.
 //
 var Sequelize = require('sequelize');
-var env = process.env.NODE_ENV || 'development';
+var env       = process.env.NODE_ENV || 'development';
 var sequelize;
 
 // NODE_ENV set to production in heroku environment.
