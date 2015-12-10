@@ -10,10 +10,10 @@ console.log('env var is '+env);
 if (env === 'production') {
 	sequelize = new Sequelize(process.env.DATABASE_URL, {
 		dialect : 'postgres'
-	});
+});
 
 } else {
-	connect to the sqlite database.
+	// connect to the sqlite database.
 	sequelize = new Sequelize(undefined, undefined, undefined, {
 		'dialect': 'sqlite',
 		'storage': __dirname + '/data/dev-todo-api.sqlite'
