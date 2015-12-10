@@ -82,9 +82,9 @@ console.log(req.params);
 	db.todo.destroy({ where: where})
 	.then ( function (todoId) {
 			if (todoId === 0 ) {
-				res.status(404).send("Todo not found");
+				res.status(404).json( {error: "Todo not found" } );
 			} else {
-				res.json(todoId);
+				res.sendStatus(204);
 			}
 	     }, function (e) {
 		 		res.status(500).send(e);
