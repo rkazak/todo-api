@@ -87,7 +87,7 @@ app.delete('/todos/:id', function(req, res) {
 	}
 });
 
-// PUT
+// PUT request
 app.put('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	var matchedTodo = _.findWhere(todos, {
