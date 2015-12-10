@@ -6,6 +6,7 @@ var sequelize;
 
 // NODE_ENV set to production in heroku environment.
 //
+console.log('env var is '+env);
 if (env === 'production') {
 	sequelize = new Sequelize(process.env.DATABASE_URL, {
 		dialect : 'postgres'
